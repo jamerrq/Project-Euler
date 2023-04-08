@@ -1,3 +1,10 @@
+/**
+ *    AUTOR: Jamer José Rebolledo Quiroz
+ *   GITHUB: github.com/jamerrq
+ * LINKEDIN: linkedin.com/in/jamerrq
+ *
+ */
+
 function multiplesOf3and5(number) {
     let suma = 0;
     for (let i = 3; i < number; ++i) {

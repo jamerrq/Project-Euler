@@ -1,3 +1,10 @@
+/**
+ *    AUTOR: Jamer José Rebolledo Quiroz
+ *   GITHUB: github.com/jamerrq
+ * LINKEDIN: linkedin.com/in/jamerrq
+ *
+ */
+
 function fiboEvenSum(n) {
     let cache = {};
     function fibo(n) {
