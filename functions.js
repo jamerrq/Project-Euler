@@ -3,94 +3,96 @@
  *   GITHUB: github.com/jamerrq
  * LINKEDIN: linkedin.com/in/jamerrq
  *
+ * AUXILIAR FUNCTIONS TO SOLVE PROJECT EULER PROBLEMS
  */
 
-let cachePrimes = { 1: false, 2: true, max: 2, primes: [2] };
-function isPrime(num) {
-    if (cachePrimes.hasOwnProperty(num)) {
-        return cachePrimes[num];
-    } else {
-        if (cachePrimes.max >= parseInt(num / 2)) {
-            for (let prime of cachePrimes.primes) {
-                if (num % prime == 0) {
-                    cachePrimes[num] = false;
-                    return false;
+class Primes {
+
+    // Get primes until n
+    constructor(n = 0) {
+        this.sieve = undefined;
+        this.maxim = undefined;
+        this.count = undefined;
+        this.primes = undefined;
+        this.maxPrime = undefined;
+        if (n) this.load_sieve(n);
+    }
+
+    load_sieve(n, save_primes = false, callback = undefined, save_sieve = true) {
+        if (this.maxim && this.maxim >= n) return;
+        this.maxim = n;
+        if (save_primes) this.primes = [];
+        if (n > 1) {
+            this.count = 0;
+            this.sieve = new Array(n).fill(true);
+            for (let i = 2; i <= n; ++i) {
+                if (this.sieve[i - 1]) {
+                    this.count++;
+                    if (callback) callback(i);
+                    if (save_primes) {
+                        this.primes.push(i);
+                    }
+                    if (!this.maxPrime) this.maxPrime = i;
+                    this.maxPrime = Math.max(this.maxPrime, i);
+                    for (let k = i ** 2; k <= n; k += i) {
+                        if (this.sieve[k - 1]) this.sieve[k - 1] = false;
+                    }
                 }
             }
-            cachePrimes[num] = true;
-            cachePrimes.max = Math.max(cachePrimes.max, num);
-            cachePrimes.primes.push(num);
-            return true;
         }
-        let bool = true;
-        for (let i = 2; i < num; ++i) {
-            if (num % i == 0) {
-                bool = false;
-                if(i > cachePrimes.max){
-                    cachePrimes.max = i;
-                    cachePrimes[i] = true;
-                    cachePrimes.primes.push(i);
-                }
-                break;
-            }
-        }
-        if (bool) {
-            if(num > cachePrimes.max){
-                cachePrimes.max = num;
-                cachePrimes.primes.push(num);
-            }
-        }
-        cachePrimes[num] = bool;
-        return cachePrimes[num];
     }
+
+    isPrime(n) {
+        this.load_sieve(n);
+        return this.sieve[n - 1];
+    }
+
+    getFacts(n) {
+        if (n < 2) return [];
+        this.load_sieve(n, true);
+        if (this.isPrime(n)) return [n];
+        let facts = [];
+        for (let prime of this.primes) {
+            while (n % prime == 0) {
+                n /= prime;
+                facts.push(prime);
+            }
+            if (n == 1) break;
+        }
+        return facts;
+    }
+
+    getDivs(n) {
+        if (n < 2) return [];
+        this.load_sieve(n, true);
+        if (this.isPrime(n)) return [n];
+        let divs = [];
+        for (let prime of this.primes) {
+            if (!(n % prime)) divs.push(prime);
+        }
+        return divs;
+    }
+
 }
 
-// console.log(isPrime(271));
-// console.log(isPrime(5));
-// console.log(cachePrimes);
-
-function getDivs(num) {
-    let divs = [];
-    let accm = 1;
-    for (let i = 2; i <= parseInt(num / 2); ++i) {
-        if (num % i == 0 && isPrime(i)) {
-            divs.push(i);
-            accm *= i;
-        }
-        if (accm == num) break;
-    }
-    divs.push(num);
-    return divs;
-}
-
-console.log(getDivs(10));
-
-let cacheFibo = {};
+let cacheFibo = { 0: 0, 1: 1 };
 function fibo(n) {
     if (cacheFibo.hasOwnProperty(n)) {
         return cacheFibo[n];
-    }
-    if (n <= 1) {
-        return n;
     }
     cacheFibo[n] = fibo(n - 1) + fibo(n - 2);
     return cacheFibo[n];
 }
 
-// console.log(fibo(100));
-
 function isPalindrome(str) {
     return str == str.split("").reverse().join("");
 }
 
-function gcd(a, b){
-    if(!b)return a;
+function gcd(a, b) {
+    if (!b) return a;
     return gcd(b, a % b);
 }
 
-function lcm(a, b){
+function lcm(a, b) {
     return (a * b) / gcd(a, b);
 }
-
-// console.log(gcd(21, 14));
-// console.log(lcm(4, 5));
